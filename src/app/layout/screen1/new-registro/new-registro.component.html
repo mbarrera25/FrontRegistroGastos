@@ -1,10 +1,10 @@
 
 <mat-card style="height: 50%; width: 50%">
-    <mat-card-title>Crear Registro Diario</mat-card-title>
+    <mat-card-title>Registro Diario</mat-card-title>
     <form [formGroup] = formRegistro style="display: flex; flex-direction: column">
         <mat-form-field class="mat-form-field" >
             <mat-label>Fecha</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="fecha">
+            <input matInput [matDatepicker]="picker" formControlName="fecha" required>
             <mat-datepicker-toggle matSuffix [for]="picker" ></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
