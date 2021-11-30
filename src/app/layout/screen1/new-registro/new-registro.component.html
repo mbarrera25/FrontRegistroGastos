@@ -1,0 +1,40 @@
+
+<mat-card style="height: 50%; width: 50%">
+    <mat-card-title>Crear Registro Diario</mat-card-title>
+    <form [formGroup] = formRegistro style="display: flex; flex-direction: column">
+        <mat-form-field class="mat-form-field" >
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha">
+            <mat-datepicker-toggle matSuffix [for]="picker" ></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-radio-group
+            formControlName="tipo" style="display: flex; flex-direction: row;" (change)="listarCuentas(formRegistro.controls.tipo.value)" >
+            <mat-radio-button checked [value]="1" style="margin-right: 20px">
+                {{"Ingreso"}}
+            </mat-radio-button>
+            <mat-radio-button [value]="2" style="margin-right: 20px">
+                {{"Egresos"}}
+            </mat-radio-button>
+        </mat-radio-group>
+        <mat-form-field>
+        <mat-label>Cuenta</mat-label>
+        <mat-select formControlName="cuenta" required >
+            <mat-option  *ngFor="let cuenta of listCuentas"  [value]="cuenta.id">{{cuenta.nombre}}</mat-option>
+        </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Concepto</mat-label>
+            <input matInput formControlName="concepto" required>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Monto</mat-label>
+            <input matInput formControlName="monto" required ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" type="number">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Observacion</mat-label>
+            <textarea matInput formControlName="observaciones" > </textarea>
+        </mat-form-field>
+    </form>
+    <button mat-raised-button color="accent" (click)="guardar()" routerLink="/../screen1">Guardar</button>
+</mat-card>
