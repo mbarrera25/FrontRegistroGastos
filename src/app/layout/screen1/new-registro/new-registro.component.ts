@@ -18,7 +18,7 @@ export class NewRegistroComponent implements OnInit {
         concepto: new FormControl(''),
         mes: new FormControl(''),
         monto: new FormControl(0),
-        tipo: new FormControl(''),
+        tipo: new FormControl(1),
         total: new FormControl(0),
         observaciones: new FormControl(''),
         cuenta: new FormControl(0)
