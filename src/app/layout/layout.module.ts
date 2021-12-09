@@ -8,20 +8,24 @@ import { LayoutRoutingModule } from './layout-routing.module';
 import { LayoutComponent } from './layout.component';
 import { NavComponent } from './nav/nav.component';
 import { Screen2Component } from './screen2/screen2.component';
+import { ConceptosComponent } from './conceptos/conceptos.component';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
     imports: [
         CommonModule,
         LayoutRoutingModule,
         MaterialModule,
-        TranslateModule
+        TranslateModule,
+        ReactiveFormsModule
     ],
     declarations: [
         Screen2Component,
         LayoutComponent,
         NavComponent,
         TopnavComponent,
-        SidebarComponent
+        SidebarComponent,
+        ConceptosComponent
     ]
 
 })

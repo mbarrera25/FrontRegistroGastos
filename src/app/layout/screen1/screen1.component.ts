@@ -7,6 +7,7 @@ import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {BackendService} from '../../service/backend.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RegistroDialogComponent } from './new-registro/registro.dialog/registro.dialog.component';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-screen1',
@@ -23,11 +24,14 @@ export class Screen1Component implements OnInit {
         desde: new FormControl(''),
         hasta: new FormControl(''),
         mes: new FormControl(''),
-        tipo: new FormControl(''),
+        tipo: new FormControl(1),
+        cuenta: new FormControl(''),
     });
     valor: any;
+    listCuentas: any;
+    ok: boolean = false;
 
-    constructor(private router: Router,
+    constructor(private router: Router, public datepipe: DatePipe,
                 private route: ActivatedRoute,
                 private backendService: BackendService,
                 private _dialog: MatDialog,
@@ -37,7 +41,7 @@ export class Screen1Component implements OnInit {
     }
 
   ngOnInit() {
-
+      this.listarCuentas(1);
   }
 
     async getRegistros() {
@@ -73,5 +77,56 @@ export class Screen1Component implements OnInit {
     prueba() {
 
         console.log(this.formFiltros.controls.filtro.value);
+    }
+
+    filtrar(value: any) {
+        if (value==1){
+            let desde = this.datepipe.transform(new Date(this.formFiltros.controls.desde.value), 'yyyy-MM-dd').toString();
+            let hasta = this.datepipe.transform(new Date(this.formFiltros.controls.hasta.value), 'yyyy-MM-dd').toString();
+            this.listRegisto = this.listRegisto.filter(reg =>
+                reg.fecha.slice(0,10)>= desde && reg.fecha.slice(0,10) <=hasta
+            )
+            console.log(desde + ' -- ' + hasta);
+            console.log(this.listRegisto)
+
+        }
+        if (value==2){
+            this.listRegisto = this.listRegisto.filter(reg =>
+                reg.tipo==1
+            )
+            console.log(this.listRegisto)
+        }
+        if (value==3){
+            this.listRegisto = this.listRegisto.filter(reg =>
+                reg.tipo==2
+            )
+            console.log(this.listRegisto)
+        }
+        if (value==4){
+                let valor = this.formFiltros.controls.cuenta.value;
+                console.log(this.formFiltros.controls.cuenta.value);
+                this.listRegisto = this.listRegisto.filter(reg =>
+                    reg.cuenta.id === valor
+                )
+                console.log(this.listRegisto);
+        }
+    }
+    borrarFiltro(){
+        this.getRegistros();
+    }
+    listarCuentas(tipo: number) {
+        const param = {
+            tipo: tipo
+        };
+        console.log(param);
+        this.backendService.callBackEnd(param, 'listaGatosPorTipo').subscribe(lista => {
+            this.listCuentas = lista.body;
+            console.log(this.listCuentas);
+        });
+    }
+
+    getTotal(value:number) {
+        let ing = this.listRegisto.filter(i => i.tipo==value);
+        return ing.map(r=> r.monto).reduce((acc,value) => acc + value,0)
     }
 }

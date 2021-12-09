@@ -1,14 +1,13 @@
 
 <div class="mb-20" flFlex flexLayout="row" flexLayout.lt-md="column">
     <div fxFlex>
-     <!--   <div style="width: 800px; ">
-            <form [formGroup]="formFiltros" style="display: flex; flex-direction: row">
+       <div style="width: 800px; ">
+            <form [formGroup]="formFiltros" style="display: flex; flex-direction: column">
                 <mat-select placeholder="Filtrar por..." formControlName="filtro" (selectionChange)="valor=this.formFiltros.controls.filtro.value">
                     <mat-option value="1">Fecha</mat-option>
                     <mat-option value="2">Ingresos</mat-option>
                     <mat-option value="3">Egresos</mat-option>
                     <mat-option value="4">tipo</mat-option>
-                    <mat-option value="5">mes</mat-option>
                 </mat-select>
                 <div *ngIf="valor==1" style="display: flex; flex-direction: row">
                     <mat-form-field class="mat-form-field" style="margin-right: 20px">
@@ -24,64 +23,94 @@
                         <mat-datepicker #hasta></mat-datepicker>
                     </mat-form-field>
                 </div>
-                <div *ngIf="valor==3" style="display: flex; flex-direction: row">
-
-                </div>
+                <div *ngIf="valor==4" style="display: flex; flex-direction: column">
+                    <div class="mb-20">
+                        <mat-radio-group
+                            formControlName="tipo" style="display: flex; flex-direction: row;" (change)="listarCuentas(formFiltros.controls.tipo.value)" >
+                            <mat-radio-button checked [value]="1" style="margin-right: 20px">
+                                {{"Ingreso"}}
+                            </mat-radio-button>
+                            <mat-radio-button [value]="2" style="margin-right: 20px">
+                                {{"Egresos"}}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div class="mb-20">
+                        <mat-form-field>
+                            <mat-label>Cuenta</mat-label>
+                            <mat-select formControlName="cuenta" required >
+                                <mat-option  *ngFor="let cuenta of listCuentas"  [value]="cuenta.id">{{cuenta.nombre}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    </div>
             </form>
-        </div> -->
+           <button mat-raised-button color="accent" (click)="filtrar(formFiltros.controls.filtro.value)">Filtrar</button>
+           <button mat-raised-button color="warn" (click)="borrarFiltro()">borrar</button>
+        </div>
 
     <button mat-raised-button color="primary" style="position: relative; margin: 20px" (click)="openForm(0)" >Crear Registro Diario</button>
-    <table mat-table [dataSource]="listRegisto" class="mat-elevation-z8" style="width: 80%">
+
+    <table mat-table [dataSource]="listRegisto" class="mat-elevation-z8" style="width: 100%">
         <ng-container matColumnDef="fecha"  >
             <th mat-header-cell *matHeaderCellDef >fecha</th>
             <td mat-cell *matCellDef="let registro">
                 {{registro.fecha | date: "dd/MM/yyyy"}}
             </td>
+            <td mat-footer-cell *matFooterCellDef> totales</td>
         </ng-container>
         <ng-container matColumnDef="tipo"  >
             <th mat-header-cell *matHeaderCellDef >tipo</th>
             <td mat-cell *matCellDef="let registro">
                 {{registro.cuenta.nombre}}
             </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
         </ng-container>
         <ng-container matColumnDef="cliente"  >
-            <th mat-header-cell *matHeaderCellDef >concepto</th>
+            <th mat-header-cell *matHeaderCellDef ></th>
             <td mat-cell *matCellDef="let registro">
                 {{registro.concepto}}
             </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
         </ng-container>
         <ng-container matColumnDef="ingreso"  >
             <th mat-header-cell *matHeaderCellDef >Ingresos</th>
             <td mat-cell *matCellDef="let registro">
-                {{registro.tipo==1 ? registro.monto : "--"}}
+                {{registro.tipo==1 ? (registro.monto | currency) : (0 | currency)}}
             </td>
+            <td mat-footer-cell *matFooterCellDef> {{getTotal(1) | currency}} </td>
         </ng-container>
         <ng-container matColumnDef="egreso"  >
             <th mat-header-cell *matHeaderCellDef >Egresos</th>
             <td mat-cell *matCellDef="let registro">
-                {{registro.tipo==2 ? registro.monto : "--"}}
+                {{registro.tipo==2 ? (registro.monto | currency) : (0 | currency)}}
             </td>
+            <td mat-footer-cell *matFooterCellDef> {{getTotal(2) | currency}}</td>
         </ng-container>
         <ng-container matColumnDef="total"  >
             <th mat-header-cell *matHeaderCellDef >Total</th>
             <td mat-cell *matCellDef="let registro">
-                {{registro.total}}
+                {{registro.total | currency}}
             </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
         </ng-container>
         <ng-container matColumnDef="observaciones"  >
             <th mat-header-cell *matHeaderCellDef >Observaciones</th>
             <td mat-cell *matCellDef="let registro">
                 {{registro.observaciones}}
             </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
         </ng-container>
         <ng-container matColumnDef="editar"  >
             <th mat-header-cell *matHeaderCellDef >Editar</th>
             <td mat-cell *matCellDef="let registro">
                <button mat-raised-button color="accent" (click)="openForm(registro.id)">editar</button>
             </td>
+            <td mat-footer-cell *matFooterCellDef> </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="columnasregistro"></tr>
-        <tr mat-row *matRowDef="let row; columns: columnasregistro;"></tr>
+        <tr mat-row class="item-list " *matRowDef="let row; columns: columnasregistro;"></tr>
+        <tr mat-footer-row *matFooterRowDef="columnasregistro; sticky: true"></tr>
     </table>
     </div>
 </div>

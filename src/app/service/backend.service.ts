@@ -14,15 +14,21 @@ export class BackendService {
 
     private urlEndPoint = 'http://localhost:8090/';
 
-    callBackEnd(param: any, service: any) {
+    callBackEnd(param: any, service: any, json_: boolean = true) {
         let headers: any;
+        let contenType = 'text/json';
+        // tslint:disable-next-line:triple-equals
+        if (json_ != false) {
+            contenType = 'application/json';
+        }
         headers = new HttpHeaders({
-            'Content-Type': 'text/json',
+            'Content-Type': contenType,
             Accept: 'application/json'
         });
-        let json = '';
-        json = JSON.stringify(param);
-        console.log(json)
+
+        // tslint:disable-next-line:triple-equals
+        let json = json_ ? JSON.stringify(param) : param;
+        console.log(json);
         return this.http.post(this.urlEndPoint + service, json, headers).pipe(
             map(response => response as unknown as any)
         );

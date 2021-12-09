@@ -96,4 +96,5 @@ export class NewRegistroComponent implements OnInit {
         });
     }
 
+
 }

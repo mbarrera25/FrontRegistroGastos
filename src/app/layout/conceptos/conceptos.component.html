@@ -1,0 +1,42 @@
+
+<mat-card style="height: 30%; width: 30%">
+    <mat-card-title>Nuevo Concepto</mat-card-title>
+    <form [formGroup] = formConcepto style="display: flex; flex-direction: column; margin-top: 50px">
+        <div class="mb-20">
+            <mat-radio-group
+                formControlName="tipo" style="display: flex; flex-direction: row;" required >
+                <mat-radio-button checked [value]="1" style="margin-right: 20px">
+                    {{"Ingreso"}}
+                </mat-radio-button>
+                <mat-radio-button [value]="2" style="margin-right: 20px">
+                    {{"Egresos"}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div class="mb-20">
+            <mat-form-field>
+                <mat-label>Concepto</mat-label>
+                <input matInput formControlName="nombre" required>
+            </mat-form-field>
+        </div>
+    </form>
+    <button mat-raised-button color="accent" (click)="guardar()" >Guardar</button>
+</mat-card>
+
+<table mat-table [dataSource]="listCuentas" class="mat-elevation-z8" style="width: 100%">
+    <ng-container matColumnDef="concepto"  >
+        <th mat-header-cell *matHeaderCellDef >Concepto</th>
+        <td mat-cell *matCellDef="let concepto">
+            {{concepto.nombre}}
+        </td>
+    </ng-container>
+    <ng-container matColumnDef="tipo"  >
+        <th mat-header-cell *matHeaderCellDef >tipo</th>
+        <td mat-cell *matCellDef="let concepto">
+            {{concepto.tipo==1 ? 'Ingreso' : 'Egreso'}}
+        </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="tipoColumnas"></tr>
+    <tr mat-row class="item-list " *matRowDef="let row; columns: tipoColumnas;"></tr>
+</table>
+
