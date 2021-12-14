@@ -50,6 +50,7 @@
         </div>
 
     <button mat-raised-button color="primary" style="position: relative; margin: 20px" (click)="openForm(0)" >Crear Registro Diario</button>
+    <button mat-raised-button color="primary" style="position: relative; margin: 20px" (click)="generar(this.listRegisto)" >Generar Reporte</button>
 
     <table mat-table [dataSource]="listRegisto" class="mat-elevation-z8" style="width: 100%">
         <ng-container matColumnDef="fecha"  >
@@ -112,5 +113,6 @@
         <tr mat-row class="item-list " *matRowDef="let row; columns: columnasregistro;"></tr>
         <tr mat-footer-row *matFooterRowDef="columnasregistro; sticky: true"></tr>
     </table>
+
     </div>
 </div>

@@ -8,6 +8,7 @@ import {BackendService} from '../../service/backend.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RegistroDialogComponent } from './new-registro/registro.dialog/registro.dialog.component';
 import {DatePipe} from '@angular/common';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-screen1',
@@ -128,5 +129,18 @@ export class Screen1Component implements OnInit {
     getTotal(value:number) {
         let ing = this.listRegisto.filter(i => i.tipo==value);
         return ing.map(r=> r.monto).reduce((acc,value) => acc + value,0)
+    }
+
+    generar(listRegisto: iRegistro[]) {
+        this.backendService.callBackEnd(listRegisto,"donwloadReportExcel",false).subscribe(l => {
+            console.log(l);
+            if (l.status == 200){
+                Swal.fire({
+                    icon: 'success',
+                    text: 'se ha generado el reporte con exito...'
+                })
+                console.log("se ha generado el reporte con exito...");
+            }
+        })
     }
 }
