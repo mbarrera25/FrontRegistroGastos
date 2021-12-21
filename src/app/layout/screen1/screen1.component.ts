@@ -131,8 +131,8 @@ export class Screen1Component implements OnInit {
         return ing.map(r=> r.monto).reduce((acc,value) => acc + value,0)
     }
 
-    generar(listRegisto: iRegistro[]) {
-        this.backendService.callBackEnd(listRegisto,"donwloadReportExcel",false).subscribe(l => {
+    generar(listRegisto: iRegistro[],reporte: string) {
+        this.backendService.callBackEnd(listRegisto,reporte,false).subscribe(l => {
             console.log(l);
             if (l.status == 200){
                 Swal.fire({

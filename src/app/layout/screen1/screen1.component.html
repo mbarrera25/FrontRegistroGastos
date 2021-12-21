@@ -50,7 +50,8 @@
         </div>
 
     <button mat-raised-button color="primary" style="position: relative; margin: 20px" (click)="openForm(0)" >Crear Registro Diario</button>
-    <button mat-raised-button color="primary" style="position: relative; margin: 20px" (click)="generar(this.listRegisto)" >Generar Reporte</button>
+    <button mat-raised-button color="warn" style="position: relative; margin: 20px" (click)="generar(this.listRegisto,'reporteGeneral')" >Generar Reporte</button>
+    <button mat-raised-button color="accent" style="position: relative; margin: 20px" (click)="generar(this.listRegisto,'reporteResumen')" >Generar Resumen </button>
 
     <table mat-table [dataSource]="listRegisto" class="mat-elevation-z8" style="width: 100%">
         <ng-container matColumnDef="fecha"  >
