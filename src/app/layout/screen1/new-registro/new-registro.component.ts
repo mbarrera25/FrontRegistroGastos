@@ -1,10 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Cuenta} from '../../../models/Cuenta';
 import {BackendService} from '../../../service/backend.service';
 import {DatePipe} from '@angular/common';
 import {iRegistro} from '../../../models/Registro';
 import {async} from 'rxjs/internal/scheduler/async';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-new-registro',
@@ -13,18 +14,19 @@ import {async} from 'rxjs/internal/scheduler/async';
 })
 export class NewRegistroComponent implements OnInit {
     formRegistro: FormGroup  = this.fb.group({
-        id: new FormControl(0),
-        fecha: new FormControl(''),
+        id: new FormControl(0) ,
+        fecha: new FormControl('') ,
         concepto: new FormControl(''),
         mes: new FormControl(''),
         monto: new FormControl(0),
-        tipo: new FormControl(1),
+        tipo: new FormControl(1, [Validators.required]),
         total: new FormControl(0),
         observaciones: new FormControl(''),
         cuenta: new FormControl(0)
     });
     @Input() id: number;
     @Output() submited: EventEmitter<void> = new EventEmitter();
+    enabled: boolean = true;
   constructor(private  fb: FormBuilder, public datepipe: DatePipe,
               private backendService: BackendService) {
   }
@@ -65,36 +67,52 @@ export class NewRegistroComponent implements OnInit {
         });
     }
     guardar() {
-        const date =  this.datepipe.transform(new Date(this.formRegistro.controls.fecha.value), 'dd/MM/yyyy').toString();
-       this.formRegistro.patchValue( {
-           fecha: date,
-           // tslint:disable-next-line:radix
-          // monto: parseInt(this.formRegistro.controls.monto.value.toString()),
-           tipo: this.formRegistro.controls.tipo == null ? 1 : this.formRegistro.controls.tipo.value
-       });
-       if (this.formRegistro.controls.id.value) {
-           this.backendService.callBackEnd(this.formRegistro.value, 'EditarRegistroDiarios').subscribe(lista => {
+        if (this.formRegistro.valid) {
+            const date =  this.datepipe.transform(new Date(this.formRegistro.controls.fecha.value), 'dd/MM/yyyy').toString();
+            this.formRegistro.patchValue( {
+                fecha: date,
+                // tslint:disable-next-line:radix
+                // monto: parseInt(this.formRegistro.controls.monto.value.toString()),
+                tipo: this.formRegistro.controls.tipo == null ? 1 : this.formRegistro.controls.tipo.value
+            });
+            if (this.formRegistro.controls.id.value) {
+                this.backendService.callBackEnd(this.formRegistro.value, 'EditarRegistroDiarios').subscribe(lista => {
 
-           });
-       } else {
-           this.backendService.callBackEnd(this.formRegistro.value, 'CrearRegistroDiarios').subscribe(lista => {
+                });
+            } else {
+                this.backendService.callBackEnd(this.formRegistro.value, 'CrearRegistroDiarios').subscribe(lista => {
 
-           });
-       }
-        console.log(this.formRegistro.controls.monto.value);
-        this.submited.emit();
+                });
+            }
+            console.log(this.formRegistro.controls.monto.value);
+            this.submited.emit();
 
-        this.formRegistro = this.fb.group({
-            id: new FormControl(''),
-            fecha: new FormControl(''),
-            tipo: new FormControl(''),
-            concepto: new FormControl(''),
-            monto: new FormControl(''),
-            total: new FormControl(''),
-            observaciones: new FormControl(''),
-            cuenta: new FormControl('')
-        });
+            this.formRegistro = this.fb.group({
+                id: new FormControl(''),
+                fecha: new FormControl(''),
+                tipo: new FormControl(''),
+                concepto: new FormControl(''),
+                monto: new FormControl(''),
+                total: new FormControl(''),
+                observaciones: new FormControl(''),
+                cuenta: new FormControl('')
+            });
+        }else {
+            Swal.fire({text: 'Debe llenar todos los campos'});
+        }
+
     }
 
 
+    disabled() {
+
+        // tslint:disable-next-line:triple-equals
+        if (this.formRegistro.controls.cuenta.value == 94){
+        console.log('desabilita');
+        this.enabled = false;
+
+        } else {
+            this.enabled = true;
+        }
+    }
 }
